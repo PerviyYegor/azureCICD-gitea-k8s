@@ -1,0 +1,14 @@
+[Unit]
+Description=Devops Service
+After=multi-user.target
+
+[Service]
+ExecStart=/home/{{ agent_user }}/myagent/run.sh
+WorkingDirectory=/home/{{ agent_user }}/myagent/
+User={{ agent_user }}
+Group={{ agent_user }}
+Restart=always
+Type=simple
+
+[Install]
+WantedBy=default.target

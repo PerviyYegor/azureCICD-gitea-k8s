@@ -1,0 +1,13 @@
+- name: Download Azure DevOps Agent package
+  get_url:
+    url: https://vstsagentpackage.azureedge.net/agent/3.227.2/vsts-agent-linux-x64-3.227.2.tar.gz
+    dest: /tmp/vsts-agent-linux-x64-3.227.2.tar.gz
+
+- name: Create agent directory and extract files
+  file:
+    path: /tmp/myagent
+    state: directory
+    recurse: yes
+
+- name: Extract agent package
+  command: tar zxvf /tmp/vsts-agent-linux-x64-3.227.2.tar.gz -C /tmp/myagent

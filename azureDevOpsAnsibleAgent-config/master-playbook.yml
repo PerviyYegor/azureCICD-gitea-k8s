@@ -1,0 +1,33 @@
+---
+- name: Main Playbook
+  hosts: agent
+  gather_facts: yes
+  become: yes
+  vars:  
+    agent_user: azureAgent
+
+
+  tasks:
+    - name: Expand disk
+      include_tasks: expand_disk.yml
+
+    - name: Install tools for agent
+      include_tasks: install_docker_git.yml
+
+    - name: Install agent
+      include_tasks: install_agent.yml
+
+    - name: Preconfigure agent
+      include_tasks: preconfigure_agent.yml
+
+    - name: Create and connect agent
+      become: yes
+      become_user: "{{ agent_user }}"
+      command: ~/myagent/config.sh --unattended --url {{ url }} --auth pat --token {{ token }} --pool VSphere_pool --agent {{ inventory_hostname }}
+
+    - name: Run agent
+      systemd:
+        name: devops_agent
+        enabled: yes
+        state: started
+   

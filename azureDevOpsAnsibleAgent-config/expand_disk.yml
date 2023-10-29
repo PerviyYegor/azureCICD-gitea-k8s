@@ -1,0 +1,6 @@
+- name: Expand disk
+  shell: |
+    parted /dev/sda --script resizepart 3 100%
+    pvresize /dev/sda3
+    lvextend -r -l +100%FREE /dev/ol/root
+  ignore_errors: yes

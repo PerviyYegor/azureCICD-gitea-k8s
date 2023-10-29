@@ -1,0 +1,33 @@
+- name: Create agent user
+  user:
+    name: "{{ agent_user }}"
+    state: present
+
+- name: Copy /tmp/myagent to /home/{{ agent_user }}
+  command: cp -r /tmp/myagent /home/{{ agent_user }}/
+
+
+- name: Give execute permissions to agent on ~/myagent
+  file:
+    path: /home/{{ agent_user }}/myagent
+    owner: "{{ agent_user }}"
+    group: "{{ agent_user }}"
+    mode: '0755'
+
+- name: Copy systemd service template
+  template:
+    src: devops_agent.service.j2
+    dest: /etc/systemd/system/devops_agent.service
+    
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Enable service
+  systemd:
+    name: devops_agent
+    enabled: yes
+
+- name: Fix SELinux
+  command: chcon -R -t bin_t /home/{{ agent_user }}/myagent
+    
